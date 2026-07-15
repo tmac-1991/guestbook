@@ -50,3 +50,14 @@ create policy "Allow public insert"
   on guestbook_messages for insert
   with check (true);
 ```
+
+## Enforcing the 100-character message limit at the database level
+
+The form enforces a 100-character limit client-side, but that can be bypassed
+by anyone calling the API directly. Run this once in the SQL Editor to enforce
+it server-side too:
+
+```sql
+alter table guestbook_messages
+  add constraint message_length check (char_length(message) <= 100);
+```

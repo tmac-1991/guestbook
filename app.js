@@ -3,11 +3,22 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const MESSAGE_MAX_LENGTH = 100;
+
 const form = document.getElementById("guestbook-form");
 const nameInput = document.getElementById("name");
 const messageInput = document.getElementById("message");
+const charCountEl = document.getElementById("char-count");
 const statusEl = document.getElementById("status");
 const list = document.getElementById("messages");
+
+function updateCharCount() {
+  const length = messageInput.value.length;
+  charCountEl.textContent = `${length} / ${MESSAGE_MAX_LENGTH}`;
+  charCountEl.classList.toggle("limit", length >= MESSAGE_MAX_LENGTH);
+}
+
+messageInput.addEventListener("input", updateCharCount);
 
 function setStatus(text, isError = false) {
   statusEl.textContent = text;
@@ -60,6 +71,10 @@ form.addEventListener("submit", async (e) => {
   const name = nameInput.value.trim();
   const message = messageInput.value.trim();
   if (!message) return;
+  if (message.length > MESSAGE_MAX_LENGTH) {
+    setStatus(`Message must be ${MESSAGE_MAX_LENGTH} characters or fewer.`, true);
+    return;
+  }
 
   const submitButton = form.querySelector("button");
   submitButton.disabled = true;
@@ -78,6 +93,7 @@ form.addEventListener("submit", async (e) => {
 
   setStatus("Posted!");
   messageInput.value = "";
+  updateCharCount();
   await loadMessages();
 });
 
