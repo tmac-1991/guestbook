@@ -15,15 +15,10 @@ function setStatus(text, isError = false) {
 }
 
 function formatTime(iso) {
-  const date = new Date(iso);
-  const weekday = date.toLocaleDateString(undefined, { weekday: "long" });
-  const monthDay = date.toLocaleDateString(undefined, {
-    month: "long",
-    day: "numeric",
+  return new Date(iso).toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
   });
-  const year = date.getFullYear();
-  const time = date.toLocaleTimeString(undefined, { timeStyle: "short" });
-  return `${time} · ${weekday}, ${monthDay}, ${year}`;
 }
 
 function renderMessages(rows) {
